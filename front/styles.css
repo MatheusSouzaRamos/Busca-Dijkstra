@@ -1,0 +1,25 @@
+body{
+    margin: 0;
+    display: flex;
+    place-content: center;
+    height: 100vh;
+}
+
+main{
+    display: flex;
+    place-items: center;
+    position: relative;
+
+}
+
+.node{
+    background-color: red;
+    clip-path: circle(50%);
+    width: 100px;
+    aspect-ratio: 1/1;
+    color: white;
+    display: flex;
+    place-items: center;
+    place-content: center;
+    position: absolute;
+}
