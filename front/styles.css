@@ -2,13 +2,17 @@ body{
     margin: 0;
     display: flex;
     place-content: center;
+    place-items: center;
     height: 100vh;
 }
 
 main{
     display: flex;
     place-items: center;
+    place-content: center;
     position: relative;
+    height: 600px;
+    width: 600px;
 
 }
 
@@ -21,6 +25,7 @@ main{
     display: flex;
     place-items: center;
     place-content: center;
-    position: absolute;
     margin: 1em;
+    flex: 1 0 15%;
+    flex-flow: column wrap;
 }
