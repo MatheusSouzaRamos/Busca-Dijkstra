@@ -118,4 +118,4 @@ const calcNodes = async (path) => {
   showNodesOnScreen(nodeSet, edgesPath);
 };
 
-calcNodes("../grafo2.json");
+calcNodes("../grafo.json");
