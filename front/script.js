@@ -1,84 +1,42 @@
-const showNodesOnScreen = (nodes, edgesPath) => {
-  if (typeof nodes !== "object")
-    throw new Error("Nodes were not passed as array");
-
-  const main = document.querySelector("main");
-
-  main.style.position = "relative";
-  const nodeDivs = new Map();
-  // Pega tamanho do main para limitar as posições
-  const mainWidth = main.offsetWidth || 800;
-  const mainHeight = main.offsetHeight || 600;
-  nodes.forEach((node) => {
-    let div = document.createElement("div");
-    div.classList.add("node");
-    div.innerHTML = node;
+// Função para aleatorizar as posições dos nós dentro do main
+function randomizeNodePositions(divs, mainWidth, mainHeight) {
+  const margin = 50; // margem para não colar na borda
+  divs.forEach((div) => {
+    const nodeWidth = div.offsetWidth;
+    const nodeHeight = div.offsetHeight;
+    // Gera posições aleatórias dentro dos limites do main
+    const x = Math.random() * (mainWidth - nodeWidth - margin * 2) + margin;
+    const y = Math.random() * (mainHeight - nodeHeight - margin * 2) + margin;
     div.style.position = "absolute";
-    const nodeW = 60,
-      nodeH = 60;
-    let x,
-      y,
-      tries = 0,
-      conflict;
-    do {
-      x = Math.random() * (mainWidth - nodeW);
-      y = Math.random() * (mainHeight - nodeH);
-      conflict = false;
-      for (const otherDiv of nodeDivs.values()) {
-        const ox = parseFloat(otherDiv.style.left);
-        const oy = parseFloat(otherDiv.style.top);
-        // Checa colisão retangular
-        if (
-          x < ox + nodeW &&
-          x + nodeW > ox &&
-          y < oy + nodeH &&
-          y + nodeH > oy
-        ) {
-          conflict = true;
-          break;
-        }
-      }
-      tries++;
-    } while (conflict && tries < 100);
     div.style.left = `${x}px`;
     div.style.top = `${y}px`;
-    main.appendChild(div);
-    nodeDivs.set(node, div);
   });
+}
 
-  // Cria o SVG (uma vez só)
-  let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-  svg.style.position = "absolute";
-  svg.style.top = 0;
-  svg.style.left = 0;
-  svg.style.width = "100%";
-  svg.style.height = "100%";
-  svg.style.pointerEvents = "none";
-  svg.setAttribute("width", main.offsetWidth);
-  svg.setAttribute("height", main.offsetHeight);
-  main.appendChild(svg);
+const createsvg = ({main}) => {
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.classList.add("svg");
 
-  // Espera renderizar para pegar as posições reais e desenhar as linhas
-  requestAnimationFrame(() => {
-    // Limpa linhas antigas
-    svg.innerHTML = "";
+    svg.setAttribute("width", main.offsetWidth);
+    svg.setAttribute("height", main.offsetHeight);
 
-    const mainRect = main.getBoundingClientRect();
+    main.appendChild(svg);
+    return svg;
+}
 
-    edgesPath.forEach(([from, to]) => {
-      const fromDiv = nodeDivs.get(from);
-      const toDiv = nodeDivs.get(to);
+const createNodesDiv = ({main, nodes}) => {
+    const divs = new Map();
+    nodes.forEach((node) => {
+        let div = document.createElement("div");
+        div.classList.add("node");
+        div.innerHTML = node;
+        main.appendChild(div);
+        divs.set(node, div);
+    });
+    return divs;
+}
 
-      const fromRect = fromDiv.getBoundingClientRect();
-      const toRect = toDiv.getBoundingClientRect();
-
-      // Posição central de cada nó, relativa ao main
-      const fromX = fromRect.left - mainRect.left + fromRect.width / 2;
-      const fromY = fromRect.top - mainRect.top + fromRect.height / 2;
-      const toX = toRect.left - mainRect.left + toRect.width / 2;
-      const toY = toRect.top - mainRect.top + toRect.height / 2;
-
-      // Cria a linha
+const createLine = ({fromX, fromY, toX, toY, svg}) => {
       const line = document.createElementNS(
         "http://www.w3.org/2000/svg",
         "line"
@@ -90,32 +48,68 @@ const showNodesOnScreen = (nodes, edgesPath) => {
       line.setAttribute("stroke", "#333");
       line.setAttribute("stroke-width", "4");
       svg.appendChild(line);
+}
+
+const view = ({nodes, edges}) => {
+  const main = document.querySelector("main");
+  const mainWidth = main.offsetWidth;
+  const mainHeight = main.offsetHeight;
+  const nodesPositions = new Map();
+  const svg = createsvg({main: main});
+  const divs = createNodesDiv({main: main, nodes: nodes});
+  // Embaralha as posições dos nós no main
+    randomizeNodePositions(divs, mainWidth, mainHeight);
+  
+  const linePaths = [];
+    
+  requestAnimationFrame(() => {
+    edges.forEach((to, from) => {
+      to.forEach(node => {
+        linePaths.push([from, node]);
+      });
+
+      divs.forEach((div, node) => {
+        const rect = div.getBoundingClientRect();
+        const mainRect = main.getBoundingClientRect();
+        nodesPositions.set(node, {
+          x: rect.left - mainRect.left + rect.width / 2,
+          y: rect.top - mainRect.top + rect.height / 2
+        });
+      });
+    });
+
+    linePaths.forEach(([from, to]) => {
+      const fromX = nodesPositions.get(from).x;
+      const fromY = nodesPositions.get(from).y;
+      const toX = nodesPositions.get(to).x;
+      const toY = nodesPositions.get(to).y;
+      createLine({
+        svg: svg,
+        fromX: fromX,
+        fromY: fromY,
+        toX: toX,
+        toY: toY
+      });
     });
   });
-};
+}
 
-const calcNodes = async (path) => {
-  const response = await fetch(path);
-  const responseJson = await response.json();
-  const keys = Object.keys(responseJson);
-  const nodeSet = new Set(keys);
-  const edges = [];
-  const edgesPath = [];
+const controller = async (path) => {
+  const response = await fetch(path); 
+  const responseJson = await response.json(); 
+  const keys = Object.keys(responseJson); 
+  const nodeSet = new Set(keys); 
+  const edges = new Map(); 
 
-  keys.forEach((key) => {
-    edges.push([key, Object.keys(responseJson[key].arestas)]);
+  keys.forEach((key) => { //itera sobre cada nó principal informado e separa as arestas e os nós únicos
+    edges.set(key, Object.keys(responseJson[key].arestas));
     Object.keys(responseJson[key].arestas).forEach((aresta) =>
       nodeSet.add(aresta)
     );
   });
 
-  edges.forEach((edge) => {
-    const main = edge[0];
-    edge[1].forEach((node) => {
-      edgesPath.push([main, node]);
-    });
-  });
-  showNodesOnScreen(nodeSet, edgesPath);
+view({nodes: nodeSet, edges: edges});
+
 };
 
-calcNodes("../grafo.json");
+controller("../grafo.json");
