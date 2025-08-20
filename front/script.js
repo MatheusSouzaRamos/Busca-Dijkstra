@@ -1,15 +1,33 @@
-// Função para aleatorizar as posições dos nós dentro do main
+
+// Função para aleatorizar as posições dos nós dentro do main, evitando sobreposição (hitbox)
 function randomizeNodePositions(divs, mainWidth, mainHeight) {
   const margin = 50; // margem para não colar na borda
+  const maxTries = 1000;
+  const placed = [];
+
   divs.forEach((div) => {
     const nodeWidth = div.offsetWidth;
     const nodeHeight = div.offsetHeight;
-    // Gera posições aleatórias dentro dos limites do main
-    const x = Math.random() * (mainWidth - nodeWidth - margin * 2) + margin;
-    const y = Math.random() * (mainHeight - nodeHeight - margin * 2) + margin;
+    let tries = 0;
+    let x, y, overlap;
+
+    do {
+      x = Math.random() * (mainWidth - nodeWidth - margin * 2) + margin;
+      y = Math.random() * (mainHeight - nodeHeight - margin * 2) + margin;
+      overlap = placed.some(pos =>
+        // Checa colisão de hitbox (retângulo)
+        x < pos.x + pos.w &&
+        x + nodeWidth > pos.x &&
+        y < pos.y + pos.h &&
+        y + nodeHeight > pos.y
+      );
+      tries++;
+    } while (overlap && tries < maxTries);
+
     div.style.position = "absolute";
     div.style.left = `${x}px`;
     div.style.top = `${y}px`;
+    placed.push({ x, y, w: nodeWidth, h: nodeHeight });
   });
 }
 
@@ -48,6 +66,7 @@ const createLine = ({fromX, fromY, toX, toY, svg}) => {
       line.setAttribute("stroke", "#333");
       line.setAttribute("stroke-width", "4");
       svg.appendChild(line);
+      return line;
 }
 
 const view = ({nodes, edges}) => {
@@ -55,10 +74,10 @@ const view = ({nodes, edges}) => {
   const mainWidth = main.offsetWidth;
   const mainHeight = main.offsetHeight;
   const nodesPositions = new Map();
+  const pathLines = new Map();
   const svg = createsvg({main: main});
   const divs = createNodesDiv({main: main, nodes: nodes});
-  // Embaralha as posições dos nós no main
-    randomizeNodePositions(divs, mainWidth, mainHeight);
+  randomizeNodePositions(divs, mainWidth, mainHeight);
   
   const linePaths = [];
     
@@ -83,15 +102,21 @@ const view = ({nodes, edges}) => {
       const fromY = nodesPositions.get(from).y;
       const toX = nodesPositions.get(to).x;
       const toY = nodesPositions.get(to).y;
-      createLine({
+    const line = createLine({
         svg: svg,
         fromX: fromX,
         fromY: fromY,
         toX: toX,
         toY: toY
       });
+      const key = [from, to].sort().join("-");
+        if (!pathLines.has(key)) {
+        pathLines.set(key, line);
+}
+
     });
   });
+  return pathLines;
 }
 
 const controller = async (path) => {
@@ -108,8 +133,11 @@ const controller = async (path) => {
     );
   });
 
-view({nodes: nodeSet, edges: edges});
-
+const pathLines = view({nodes: nodeSet, edges: edges});
+setTimeout(() => {
+  console.log(pathLines);
+  console.log(pathLines.size);
+}, 100);
 };
 
 controller("../grafo.json");
