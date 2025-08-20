@@ -63,7 +63,7 @@ const createLine = ({fromX, fromY, toX, toY, svg}) => {
       line.setAttribute("y1", fromY);
       line.setAttribute("x2", toX);
       line.setAttribute("y2", toY);
-      line.setAttribute("stroke", "#333");
+      line.setAttribute("stroke", "#979797ff");
       line.setAttribute("stroke-width", "4");
       svg.appendChild(line);
       return line;
@@ -139,5 +139,24 @@ setTimeout(() => {
   console.log(pathLines.size);
 }, 100);
 };
+
+const downloadModel = () => {
+  fetch("../grafo.json")
+    .then(response => response.json())
+    .then(grafo => {
+      const conteudo = JSON.stringify(grafo, null, 2);
+      const blob = new Blob([conteudo], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = "grafo.json";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+}
+
+document.querySelector("#downloadBtn").addEventListener("click", downloadModel);
 
 controller("../grafo.json");
