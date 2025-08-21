@@ -1,8 +1,10 @@
+package application;
+
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        Grafo grafo = Leitor.lerGrafo("grafo.json");
+        Grafo grafo = Leitor.lerGrafo("backend/src/main/java/application/grafo/grafo.json");
 
         String inicio = "no_F";
         String destino = "no_I";
