@@ -1,9 +1,16 @@
+html {
+  margin: 0;
+  height: 100vh;
+  width: 100vw;
+}
+
 body {
   margin: 0;
   display: flex;
   place-content: center;
   place-items: center;
   height: 100vh;
+  width: 100vw;
   background-color: black;
   gap: 10%;
 }
@@ -34,7 +41,7 @@ main {
   z-index: 1;
 }
 
-.svg{
+.svg {
   position: absolute;
   top: 0;
   left: 0;
@@ -42,18 +49,23 @@ main {
   height: 100%;
 }
 
-.main{
-background: url(./assets/background.gif);
-height: 100%;
-background-position: center;
-background-repeat: no-repeat;
-background-size: contain;
-display: flex;
-place-content: center;
-flex-direction: column;
+.main {
+  background: url(./assets/background.gif);
+  height: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  display: flex;
+  place-content: center;
+  flex-direction: column;
 }
 
-.main > div{
+.main > div {
   margin-bottom: 100px;
 }
 
+@media (max-width: 480px) {
+  body {
+    flex-direction: column;
+  }
+}
