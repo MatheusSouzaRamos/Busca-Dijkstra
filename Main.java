@@ -4,8 +4,8 @@ public class Main {
     public static void main(String[] args) {
         Grafo grafo = Leitor.lerGrafo("grafo.json");
 
-        String inicio = "no_A";
-        String destino = "no_F";
+        String inicio = "no_F";
+        String destino = "no_I";
 
         List<String> caminho = Dijkstra.caminhoMinimo(grafo, inicio, destino);
 
@@ -20,7 +20,7 @@ public class Main {
                 No proximoNo = grafo.getNos().get(caminho.get(i + 1));
                 custo += noAtual.getVizinhos().get(proximoNo);
             }
-            System.out.println("Custo total do caminho: " + custo);
+            System.out.println("Custo total caminho: " + custo);
         }
     }
 }
