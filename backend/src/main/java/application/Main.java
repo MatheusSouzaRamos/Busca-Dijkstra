@@ -4,10 +4,10 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        Grafo grafo = Leitor.lerGrafo("backend/src/main/java/application/grafo/grafo.json");
+        Grafo grafo = Leitor.lerGrafo("backend/src/main/java/application/grafo/grafoCidades.json");
 
-        String inicio = "no_F";
-        String destino = "no_I";
+        String inicio = "Arad";
+        String destino = "Vaslui";
 
         List<String> caminho = Dijkstra.caminhoMinimo(grafo, inicio, destino);
 
