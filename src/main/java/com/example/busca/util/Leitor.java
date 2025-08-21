@@ -1,18 +1,25 @@
-package application.app;
+package com.example.busca.util;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.Scanner;
+
+import com.example.busca.model.Grafo;
 
 public class Leitor {
 
-    public static Grafo lerGrafo(String caminhoArquivo) {
+    public static Grafo lerGrafo(String nomeArquivo) {
         Grafo grafo = new Grafo();
 
-        try (Scanner scanner = new Scanner(new File(caminhoArquivo))) {
+        try (InputStream is = Leitor.class.getClassLoader().getResourceAsStream(nomeArquivo)) {
+            if (is == null) {
+                throw new IllegalArgumentException("Arquivo não encontrado: " + nomeArquivo);
+            }
+
             StringBuilder jsonStr = new StringBuilder();
-            while (scanner.hasNextLine()) {
-                jsonStr.append(scanner.nextLine().trim());
+            try (Scanner scanner = new Scanner(is)) {
+                while (scanner.hasNextLine()) {
+                    jsonStr.append(scanner.nextLine().trim());
+                }
             }
 
             String conteudo = jsonStr.toString();
@@ -30,13 +37,12 @@ public class Leitor {
                 for (String par : arestasStr.split(",")) {
                     String[] kv = par.split(":");
                     String vizinho = kv[0].replaceAll("\"", "").trim();
-                    String valorStr = kv[1].replaceAll("[^0-9]", "").trim();
-                    int peso = Integer.parseInt(valorStr);
+                    int peso = Integer.parseInt(kv[1].replaceAll("[^0-9]", "").trim());
                     grafo.addAresta(nomeNo, vizinho, peso);
                 }
             }
 
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

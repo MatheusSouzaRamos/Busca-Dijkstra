@@ -1,8 +1,17 @@
-package application.app;
+package com.example.busca.service;
 
 import java.util.*;
 
-public class Dijkstra {
+import com.example.busca.model.Grafo;
+import com.example.busca.model.No;
+
+public class DijkstraService {
+
+    private Grafo grafo;
+
+    public DijkstraService(Grafo grafo) {
+        this.grafo = grafo;
+    }
 
     public static Map<String, Integer> calcularDistancias(Grafo grafo, String inicio) {
         Map<String, Integer> dist = new HashMap<>();
@@ -80,4 +89,15 @@ public class Dijkstra {
 
         return caminho;
     }
+
+    public static int calcularCusto(Grafo grafo, List<String> caminho) {
+        int custo = 0;
+        for (int i = 0; i < caminho.size() - 1; i++) {
+            String atual = caminho.get(i);
+            String proximo = caminho.get(i + 1);
+            custo += grafo.getNos().get(atual).getVizinhos().get(grafo.getNos().get(proximo));
+        }
+        return custo;
+    }
+
 }
