@@ -7,15 +7,39 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
+<<<<<<< Updated upstream:front/public/index.html
     <div class="main">
       <div>
         <input type="text" />
         <button id="downloadBtn">Baixar modelo</button>
         <button id="genNodeMap">Gerar mapa</button>
         <input type="file" />
+=======
+    <div class="pannel">
+      <h2>Por favor, escolha um mapa:</h2>
+      <div class="selector">
+        Deseja usar o mapa padrão?
+        <input type="radio" id="useDefaultMap" checked name="mapaPadrao" />Sim
+        <input type="radio" id="useOtherMap" name="mapaPadrao" />Não
+        <input type="file" id="otherMap" style="display: none" />
+>>>>>>> Stashed changes:public/index.html
       </div>
+
+      <div class="from-to">
+        <select required id="origin">
+          <option selected disabled>Origem</option>
+        </select>
+
+        <select required id="destiny">
+          <option selected disabled>Destino</option>
+        </select>
+      </div>
+
+      <button id="genBtn">Gerar mapa</button>
+      <button id="pathBtn">Encontrar solução</button>
+
+      <button id="downloadBtn">Baixar modelo</button>
     </div>
-    <main></main>
 
     <script src="../src/script.js"></script>
   </body>

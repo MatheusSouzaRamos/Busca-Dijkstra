@@ -4,12 +4,15 @@ import com.example.busca.model.Grafo;
 import com.example.busca.service.DijkstraService;
 import com.example.busca.util.Leitor;
 import com.example.busca.dto.Resposta;
+
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@CrossOrigin(origins = "*")
 @RestController
 public class GrafoController {
 
