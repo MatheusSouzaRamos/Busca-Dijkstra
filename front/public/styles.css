@@ -17,11 +17,12 @@ body {
 
 main {
   display: flex;
-  place-items: center;
-  place-content: center;
+  place-items: space-around;
+  place-content: space-around;
+  flex-wrap: wrap;
   height: 80%;
   width: 80%;
-  margin: 1em;
+  padding: 1em;
   position: relative;
   background-color: rgb(17, 17, 17);
   border-radius: 100px;
@@ -31,19 +32,24 @@ main {
   text-align: center;
   background-color: red;
   clip-path: circle(50%);
-  width: 80px;
+  width: 60px;
   aspect-ratio: 1/1;
   color: white;
   display: flex;
   place-items: center;
   place-content: center;
-  margin: 1em;
-  flex: 0 0 15%;
   flex-flow: column wrap;
   z-index: 1;
   cursor: grab;
+  position: absolute;
 }
 
+output {
+  width: auto;
+  height: 2em;
+  align-content: center;
+  background-color: white;
+}
 .selector {
   background-color: white;
   height: 3em;
@@ -78,6 +84,27 @@ h2 {
 
 .from-to {
   display: flex;
+  gap: 0.3em;
+  background-color: white;
+  padding: 0.3em;
+}
+
+.from-to div {
+  cursor: default;
+}
+
+input[type="radio"],
+select,
+button {
+  cursor: pointer;
+}
+
+button {
+  transition: transform 0.3s linear;
+}
+
+button:hover {
+  transform: scale(1.2);
 }
 
 @media (max-width: 480px) {
