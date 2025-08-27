@@ -3,7 +3,6 @@ import { fetchDefaultMap,fetchPathFinder,fetchUserMap } from "./api.js";
 import { extractUniqueNodes,buildNodes,appendNodesToMain, getNodesPositions,randomizePositions, highlightPath } from "./nodes.js";
 import { populateSelectors, getMain } from "./dom.js";
 
-
 const downloadDefaultMap = async (path) => {
   const response = await fetch(path);
   const blob = await response.blob();
@@ -28,7 +27,6 @@ const genPaths = (map) => {
   });
   return paths;
 };
-
 
 const components = {
   radioSim: document.querySelector("#useDefaultMap"),
@@ -60,6 +58,7 @@ const controller = () => {
     main.innerHTML = "";
     components.origin.innerHTML = "";
     components.destiny.innerHTML = "";
+    components.output.style.display = "none";
 
     if (components.radioNao.checked)
       map = await fetchUserMap(document.querySelector("#otherMap"));
@@ -102,8 +101,11 @@ const controller = () => {
       `?origem=${components.origin.value}&destino=${components.destiny.value}`;
     const result = await fetchPathFinder(url);
     components.output.innerHTML = "";
-    if(result)
+    components.output.style.display = "none";
+    if(result){
+      components.output.style.display = "flex";
     components.output.innerHTML = JSON.stringify(result, null, 2);
+    }
     if (result && result.caminho) {
       highlightPath(lineMap, result.caminho, nodeDivs);
     }
@@ -112,7 +114,8 @@ const controller = () => {
 
   components.radioSim.addEventListener("change", () => {
     if (components.radioSim.checked)
-      components.inputFile.style.display = "none";
+    components.inputFile.style.display = "none";
+     components.output.style.display = "none";
     main.innerHTML = "";
     components.origin.innerHTML = "";
     components.destiny.innerHTML = "";
@@ -122,6 +125,7 @@ const controller = () => {
   components.radioNao.addEventListener("change", () => {
     if (components.radioNao.checked)
       components.inputFile.style.display = "block";
+       components.output.style.display = "none";
     main.innerHTML = "";
     components.origin.innerHTML = "";
     components.destiny.innerHTML = "";

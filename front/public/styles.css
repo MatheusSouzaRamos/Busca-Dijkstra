@@ -64,10 +64,10 @@ output {
   width: auto;
   height: 2em;
   align-content: center;
-  background-color: white;
+ 
 }
 .selector {
-  background-color: white;
+ 
   height: 3em;
   display: flex;
   place-items: center;
@@ -77,13 +77,14 @@ output {
   gap: 1em;
 }
 
-.pannel {
+.background {
   display: flex;
   background: url(./assets/background.gif);
   height: 30%;
+  width: 100%;
   background-position: center;
   background-repeat: no-repeat;
-  background-size: contain;
+  background-size: cover;
   gap: 1em;
   text-align: center;
   place-content: center;
@@ -91,17 +92,33 @@ output {
   flex-direction: column;
 }
 
-h2 {
+.background > div{
+  display: flex;
+  flex-flow: column wrap;
+  gap: 1em;
+  width: max-content;
+  padding: 1em;
+ background-color: white;
+  border-radius: 1em;
+}
+
+output{
+  display: none;
+  place-content: center;
+}
+
+.background > div h2 {
   margin: 0;
-  background-color: white;
+ 
   border-radius: 10px;
-  width: 120%;
+  width: 100%;
 }
 
 .from-to {
   display: flex;
+  place-content: center;
   gap: 0.3em;
-  background-color: white;
+ 
   padding: 0.3em;
 }
 
