@@ -1,16 +1,14 @@
-html {
+html, body {
   margin: 0;
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
 }
 
 body {
-  margin: 0;
   display: flex;
   place-content: center;
   place-items: center;
-  height: 100vh;
-  width: 100vw;
   background-color: black;
   flex-direction: column;
 }
@@ -20,8 +18,8 @@ main {
   place-items: space-around;
   place-content: space-around;
   flex-wrap: wrap;
-  height: 80%;
-  width: 80%;
+  height: 70%;
+  width: 70%;
   padding: 1em;
   position: relative;
   background-color: rgb(17, 17, 17);
@@ -32,7 +30,7 @@ main {
   text-align: center;
   background-color: red;
   clip-path: circle(50%);
-  width: 60px;
+  width: 70px;
   aspect-ratio: 1/1;
   color: white;
   display: flex;
@@ -42,6 +40,24 @@ main {
   z-index: 1;
   cursor: grab;
   position: absolute;
+}
+
+.highlight{
+  scale: 1.2;
+  background-color: yellow;
+  color: black;
+}
+
+.highlight-final{
+  scale: 1.2;
+  background-color: rgb(255, 196, 0);
+  color: black;
+}
+
+.highlight-start{
+  scale: 1.2;
+  background-color: rgb(83, 128, 0);
+  color: black;
 }
 
 output {
