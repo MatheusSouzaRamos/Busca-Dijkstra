@@ -55,6 +55,7 @@ const components = {
 const controller = () => {
   const defaultMapPath = "../src/assets/grafo.json";
   const baseUrl = "https://back-production-c034.up.railway.app/api";
+  //const baseUrl = "http://127.0.0.1:8081/api";
   const main = getMain();
   let lineMap = new Map();
   let nodeDivs;
@@ -64,18 +65,35 @@ const controller = () => {
   });
 
   components.genMap.addEventListener("click", async () => {
-    let map;
+    let file;
     main.style.display = "flex";
     main.innerHTML = "";
     components.origin.innerHTML = "";
     components.destiny.innerHTML = "";
     components.output.style.display = "none";
-
-    if (components.radioNao.checked)
-      map = await fetchUserMap(document.querySelector("#otherMap"));
-
-    if (components.radioSim.checked)
+    let map;
+    if (components.radioSim.checked) {
       map = await fetchDefaultMap(defaultMapPath);
+    } else if (components.radioNao.checked) {
+      map = await fetchUserMap(components.inputFile);
+    }
+    if (components.radioSim.checked) {
+      file = await fetchDefaultGrafoFile();
+    } else if (components.radioNao.checked) {
+      file = components.inputFile.files[0];
+      if (!file) {
+        alert("Selecione um arquivo de grafo.json!");
+        return;
+      }
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    await fetch(baseUrl + "/upload-grafo", {
+      method: "POST",
+      body: formData,
+    });
 
     const uniqueNodes = extractUniqueNodes(map);
     const nodeMap = buildNodes(uniqueNodes);
@@ -111,39 +129,15 @@ const controller = () => {
     components.output.innerHTML = "";
     components.output.style.display = "none";
 
-    let file;
-    if (components.radioSim.checked) {
-      // Pega o grafo padrão do assets
-      file = await fetchDefaultGrafoFile();
-    } else if (components.radioNao.checked) {
-      // Pega o arquivo customizado do input
-      file = components.inputFile.files[0];
-      if (!file) {
-        alert("Selecione um arquivo de grafo.json!");
-        return;
-      }
-    }
-
-    // Envia o arquivo para o backend
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("origem", components.origin.value);
-    formData.append("destino", components.destiny.value);
-
-    // Ajuste a URL para o endpoint POST do seu backend
-    const response = await fetch(baseUrl + "/upload", {
-      method: "POST",
-      body: formData,
-    });
-    const result = await response.json();
+    const url =
+      baseUrl +
+      `?origem=${components.origin.value}&destino=${components.destiny.value}`;
+    const result = await fetchPathFinder(url);
 
     if (result) {
       components.output.style.display = "flex";
-      components.output.innerHTML = `<pre>${JSON.stringify(
-        result,
-        null,
-        2
-      )}</pre>`;
+      console.log();
+      components.output.innerHTML = `${JSON.stringify(result, null, 2)}`;
     }
     if (result && result.caminho) {
       highlightPath(lineMap, result.caminho, nodeDivs);
