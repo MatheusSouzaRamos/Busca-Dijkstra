@@ -48,7 +48,7 @@ const components = {
 };
 
 const controller = () => {
-  const defaultMapPath = "../../src/main/resources/grafo.json";
+  const defaultMapPath = "../src/assets/grafo.json";
   const baseUrl = "https://back-production-c034.up.railway.app/caminho";
   const main = getMain();
   let lineMap = new Map();
