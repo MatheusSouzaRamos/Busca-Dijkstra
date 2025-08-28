@@ -1,4 +1,3 @@
-
 /**
  * @function Fetches the default map
  * @param {string} path Path to default Json file
@@ -6,9 +5,10 @@
  */
 
 export const fetchDefaultMap = async (path) => {
-  if(typeof path !== "string")
-    throw new Error("Not string in" + fetchDefaultMap.name)
+  if (typeof path !== "string")
+    throw new Error("Not string in" + fetchDefaultMap.name);
   const map = await fetch(path);
+  if (!map.ok) throw new Error("Error in fetch");
   return map.json();
 };
 
@@ -19,7 +19,7 @@ export const fetchDefaultMap = async (path) => {
  */
 
 export const fetchUserMap = (inputFile) => {
-    if (
+  if (
     !inputFile ||
     !(inputFile instanceof HTMLInputElement) ||
     inputFile.type !== "file"
@@ -62,8 +62,8 @@ export const fetchUserMap = (inputFile) => {
 export const fetchPathFinder = async (path, tries = 5, delay = 1000) => {
   for (let attempt = 1; attempt <= tries; attempt++) {
     try {
-      if(typeof path !== "string")
-    throw new Error("Not string in" + fetchPathFinder.name)
+      if (typeof path !== "string")
+        throw new Error("Not string in" + fetchPathFinder.name);
       const result = await fetch(path);
       if (!result.ok) throw new Error("Resposta não OK");
       return await result.json();
@@ -80,4 +80,3 @@ export const fetchPathFinder = async (path, tries = 5, delay = 1000) => {
     }
   }
 };
-

@@ -1,5 +1,10 @@
+/**
+ * @function Extracts all unique nodes from the json file.
+ * @param {Object.<string, { arestas: Object.<string, number> }>} map - Graph json
+ * @returns {Set<node>} Set with all unique nodes
+ */
+
 export const extractUniqueNodes = (map) => {
-  if (map == null) return;
   const values = Object.values(map);
   const uniqueNodes = new Set(Object.keys(map));
 
@@ -12,7 +17,14 @@ export const extractUniqueNodes = (map) => {
   return uniqueNodes;
 };
 
+/**
+ * @function builds all the nodes passed into the html
+ * @param {Set<node>} nodeList Set with all unique nodes
+ * @returns {Map<node, div>} returns a map with each node's div
+ */
 export const buildNodes = (nodeList) => {
+  if (!nodeList instanceof Set)
+    throw new Error("Param not an set of unique nodes, at " + buildNodes.name);
   const nodeMap = new Map();
   nodeList.forEach((node) => {
     const div = document.createElement("div");
@@ -23,13 +35,29 @@ export const buildNodes = (nodeList) => {
   return nodeMap;
 };
 
+/**
+ * @function appends Nodes to html element
+ * @param {Set<node, div>} nodeMap Map with each node's div
+ * @param {HTMLElement} main The element html where the divs will be appended
+ */
 export const appendNodesToMain = (nodeMap, main) => {
+  if (!nodeMap instanceof Map)
+    throw new Error("Param not an map of nodes, at " + appendNodesToMain.name);
+
   nodeMap.forEach((node) => {
     main.appendChild(node);
   });
 };
 
+/**
+ * @function get the nodes' divs positions in the html
+ * @param {Map<node, div>} nodeMap Map with each node's div
+ * @returns {Map<node, position>} a Map with each node's position
+ */
 export const getNodesPositions = (nodeMap) => {
+  if (!nodeMap instanceof Map)
+    throw new Error("Param not an map of nodes, at " + appendNodesToMain.name);
+
   const nodePositions = new Map();
   nodeMap.forEach((div, node) => {
     nodePositions.set(node, div.getBoundingClientRect());
@@ -37,7 +65,16 @@ export const getNodesPositions = (nodeMap) => {
   return nodePositions;
 };
 
- const isOverlapping = (x, y, positions, nodeSize, minMargin) => {
+/**
+ *
+ * @param {*} x
+ * @param {*} y
+ * @param {*} positions
+ * @param {*} nodeSize
+ * @param {*} minMargin
+ * @returns
+ */
+const isOverlapping = (x, y, positions, nodeSize, minMargin) => {
   for (const pos of positions) {
     const dx = pos.x - x;
     const dy = pos.y - y;
@@ -49,6 +86,11 @@ export const getNodesPositions = (nodeMap) => {
   return false;
 };
 
+/**
+ * @function randomizes nodes positions in html element
+ * @param {Map<node, div>} nodeMap
+ * @param {HTMLElement} main html element
+ */
 export const randomizePositions = (nodeMap, main) => {
   const margin = 40;
   const minMargin = 50;
@@ -75,8 +117,15 @@ export const randomizePositions = (nodeMap, main) => {
   });
 };
 
+/**
+ * @function Highlights the path given to it in the html
+ * @param {Map<path, line>} lineMap map with each node path line
+ * @param {string[]} pathArray array showing Djikstra's path
+ * @param {Map<node, div>} divs map of nodes' divs
+ * @param {Number} delay delay in microseconds
+ */
 export const highlightPath = async (lineMap, pathArray, divs, delay = 1500) => {
-  divs.forEach(div => {
+  divs.forEach((div) => {
     div.classList.remove("highlight", "highlight-final", "highlight-start");
   });
 
@@ -87,7 +136,7 @@ export const highlightPath = async (lineMap, pathArray, divs, delay = 1500) => {
 
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-    if (divs.has(pathArray[0])) {
+  if (divs.has(pathArray[0])) {
     divs.get(pathArray[0]).classList.add("highlight-start");
   }
 
@@ -107,6 +156,6 @@ export const highlightPath = async (lineMap, pathArray, divs, delay = 1500) => {
   }
 
   if (divs.has(pathArray[pathArray.length - 1])) {
-  divs.get(pathArray[pathArray.length - 1]).classList.add("highlight-final");
-}
+    divs.get(pathArray[pathArray.length - 1]).classList.add("highlight-final");
+  }
 };

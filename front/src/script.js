@@ -1,6 +1,13 @@
 import { createSvg, createLine } from "./svg.js";
-import { fetchDefaultMap,fetchPathFinder,fetchUserMap } from "./api.js";
-import { extractUniqueNodes,buildNodes,appendNodesToMain, getNodesPositions,randomizePositions, highlightPath } from "./nodes.js";
+import { fetchDefaultMap, fetchPathFinder, fetchUserMap } from "./api.js";
+import {
+  extractUniqueNodes,
+  buildNodes,
+  appendNodesToMain,
+  getNodesPositions,
+  randomizePositions,
+  highlightPath,
+} from "./nodes.js";
 import { populateSelectors, getMain } from "./dom.js";
 
 const downloadDefaultMap = async (path) => {
@@ -47,12 +54,11 @@ const controller = () => {
   let lineMap = new Map();
   let nodeDivs;
 
-
   components.downloadMap.addEventListener("click", () => {
     downloadDefaultMap(defaultMapPath);
   });
 
-    components.genMap.addEventListener("click", async () => {
+  components.genMap.addEventListener("click", async () => {
     let map;
     main.style.display = "flex";
     main.innerHTML = "";
@@ -70,7 +76,7 @@ const controller = () => {
     const nodeMap = buildNodes(uniqueNodes);
     nodeDivs = nodeMap;
     appendNodesToMain(nodeMap, main);
-    populateSelectors(uniqueNodes,components.origin, components.destiny);
+    populateSelectors(uniqueNodes, components.origin, components.destiny);
 
     requestAnimationFrame(() => {
       randomizePositions(nodeMap, main);
@@ -102,20 +108,19 @@ const controller = () => {
     const result = await fetchPathFinder(url);
     components.output.innerHTML = "";
     components.output.style.display = "none";
-    if(result){
+    if (result) {
       components.output.style.display = "flex";
-    components.output.innerHTML = JSON.stringify(result, null, 2);
+      components.output.innerHTML = JSON.stringify(result, null, 2);
     }
     if (result && result.caminho) {
       highlightPath(lineMap, result.caminho, nodeDivs);
     }
   });
 
-
   components.radioSim.addEventListener("change", () => {
     if (components.radioSim.checked)
-    components.inputFile.style.display = "none";
-     components.output.style.display = "none";
+      components.inputFile.style.display = "none";
+    components.output.style.display = "none";
     main.innerHTML = "";
     components.origin.innerHTML = "";
     components.destiny.innerHTML = "";
@@ -125,14 +130,12 @@ const controller = () => {
   components.radioNao.addEventListener("change", () => {
     if (components.radioNao.checked)
       components.inputFile.style.display = "block";
-       components.output.style.display = "none";
+    components.output.style.display = "none";
     main.innerHTML = "";
     components.origin.innerHTML = "";
     components.destiny.innerHTML = "";
     main.style.display = "none";
   });
-
-
 };
 
 controller();
