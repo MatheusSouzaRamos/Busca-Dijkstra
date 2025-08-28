@@ -1,5 +1,10 @@
 import { createSvg, createLine } from "./svg.js";
-import { fetchDefaultMap, fetchPathFinder, fetchUserMap } from "./api.js";
+import {
+  fetchDefaultMap,
+  fetchPathFinder,
+  fetchUserMap,
+  fetchDefaultGrafoFile,
+} from "./api.js";
 import {
   extractUniqueNodes,
   buildNodes,
@@ -58,46 +63,44 @@ const controller = () => {
     downloadDefaultMap(defaultMapPath);
   });
 
-  components.genMap.addEventListener("click", async () => {
-    let map;
-    main.style.display = "flex";
-    main.innerHTML = "";
-    components.origin.innerHTML = "";
-    components.destiny.innerHTML = "";
+  components.genPath.addEventListener("click", async () => {
+    if (!components.origin.value || !components.destiny.value) return;
+
+    components.output.innerHTML = "";
     components.output.style.display = "none";
 
-    if (components.radioNao.checked)
-      map = await fetchUserMap(document.querySelector("#otherMap"));
+    let file;
+    if (components.radioSim.checked) {
+      file = await fetchDefaultGrafoFile();
+    } else if (components.radioNao.checked) {
+      file = components.inputFile.files[0];
+      if (!file) {
+        alert("Selecione um arquivo de grafo.json!");
+        return;
+      }
+    }
 
-    if (components.radioSim.checked)
-      map = await fetchDefaultMap(defaultMapPath);
-
-    const uniqueNodes = extractUniqueNodes(map);
-    const nodeMap = buildNodes(uniqueNodes);
-    nodeDivs = nodeMap;
-    appendNodesToMain(nodeMap, main);
-    populateSelectors(uniqueNodes, components.origin, components.destiny);
-
-    requestAnimationFrame(() => {
-      randomizePositions(nodeMap, main);
-      const svg = createSvg();
-      const mainRect = main.getBoundingClientRect();
-      const nodePositions = getNodesPositions(nodeMap);
-
-      const paths = genPaths(map);
-      paths.forEach((path, node) => {
-        const mainNode = node;
-        path.forEach((_, node) => {
-          const from = nodePositions.get(mainNode);
-          const to = nodePositions.get(node);
-          const line = createLine(from, to, mainRect);
-          svg.appendChild(line);
-          const key = `${mainNode}-${node}`;
-          lineMap.set(key, line);
-        });
-      });
-      main.appendChild(svg);
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("origem", components.origin.value);
+    formData.append("destino", components.destiny.value);
+    const response = await fetch(baseUrl + "/upload", {
+      method: "POST",
+      body: formData,
     });
+    const result = await response.json();
+
+    if (result) {
+      components.output.style.display = "flex";
+      components.output.innerHTML = `<pre>${JSON.stringify(
+        result,
+        null,
+        2
+      )}</pre>`;
+    }
+    if (result && result.caminho) {
+      highlightPath(lineMap, result.caminho, nodeDivs);
+    }
   });
 
   components.genPath.addEventListener("click", async () => {
