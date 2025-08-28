@@ -1,6 +1,6 @@
 /**
  * @function creates the svg environment
- * @returns 
+ * @returns {SVGSVGElement} the svg
  */
 
 export const createSvg = () => {
@@ -18,9 +18,10 @@ export const createSvg = () => {
  * @function creates the line that connect the nodes
  * @param {Number} from coords of where the line will begin
  * @param {Number} to coords of where the line will end
- * @param {*} mainRect borders for limiting the line
+ * @param {DOMRect} mainRect borders for limiting the line
  * @returns the line itself
  */
+
 export const createLine = (from, to, mainRect) => {
   const x1 = from.left - mainRect.left + from.width / 2;
   const y1 = from.top - mainRect.top + from.height / 2;
