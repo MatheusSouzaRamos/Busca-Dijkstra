@@ -114,7 +114,7 @@ const controller = () => {
     let file;
     if (components.radioSim.checked) {
       // Pega o grafo padrão do assets
-      file = await getDefaultGrafoFile();
+      file = await fetchDefaultGrafoFile();
     } else if (components.radioNao.checked) {
       // Pega o arquivo customizado do input
       file = components.inputFile.files[0];
