@@ -80,3 +80,9 @@ export const fetchPathFinder = async (path, tries = 5, delay = 1000) => {
     }
   }
 };
+
+export const fetchDefaultGrafoFile = async () => {
+  const response = await fetch("../src/assets/grafo.json");
+  const blob = await response.blob();
+  return new File([blob], "grafo.json", { type: "application/json" });
+};
