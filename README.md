@@ -1,41 +1,56 @@
 # Busca Dijkstra
 
-Este projeto é uma aplicação web interativa para visualização e execução do algoritmo de Dijkstra em grafos.
+Aplicação web interativa para visualização e execução do algoritmo de Dijkstra em grafos.
 
 ## 🧭 Funcionamento
 
-A aplicação permite ao usuário visualizar um grafo, selecionar nós de origem e destino, e calcular o caminho mínimo entre eles utilizando o algoritmo de Dijkstra. O frontend exibe o grafo de forma dinâmica e interativa, enquanto o backend realiza o processamento do algoritmo e retorna o resultado para ser exibido na interface.
-
-O grafo pode ser customizado e visualizado em tempo real, facilitando o entendimento do funcionamento do algoritmo e suas etapas.
+O usuário pode visualizar um grafo, escolher os nós de origem e destino e calcular o caminho mínimo entre eles usando o algoritmo de Dijkstra.  
+O frontend exibe o grafo de forma dinâmica e interativa, enquanto o backend processa o algoritmo e retorna o resultado para a interface.  
+O grafo pode ser customizado e visualizado em tempo real, facilitando o entendimento do funcionamento do algoritmo.
 
 ## 🛠️ Tecnologias Utilizadas
 
 - **Frontend:**  
-  - HTML, CSS e JavaScript puro para a interface e manipulação do DOM.
+  - HTML, CSS e JavaScript puro para interface e manipulação do DOM.
   - Visualização SVG para desenhar e animar o grafo.
   - Consumo de API REST para comunicação com o backend.
-  - Servido via Node.js utilizando o pacote `http-server` (ou similar).
+  - Servido via Node.js com `http-server` (Dockerfile incluso em `front/`).
 
 - **Backend:**  
-  - Java 17 com Spring Boot para criação de API REST.
-  - Implementação do algoritmo de Dijkstra e manipulação de grafos.
-  - Leitura de grafos a partir de arquivos JSON.
+  - Java 17 com Spring Boot para API REST.
+  - Implementação do algoritmo de Dijkstra.
+  - Leitura de grafos em JSON.
   - Configuração de CORS para integração com o frontend.
+  - Estrutura pronta para containerização (Dockerfile pode ser adicionado em `back/`).
 
-- **Containerização:**  
-  - Docker para facilitar o deploy e a execução em ambientes isolados.
+- **Containerização e Deploy:**  
+  - Docker para orquestrar frontend e backend.
+  - Deploy realizado no Railway, facilitando a publicação online dos containers (frontend e backend são publicados separadamente).
 
 ## 📂 Estrutura
 
-- `front/` — Código fonte do frontend, arquivos estáticos e scripts JS.
-- `back/` — Código fonte do backend em Java/Spring Boot.
-- `public/` — Arquivos públicos do frontend (HTML, CSS, imagens, etc).
-- `src/` — Scripts do frontend para manipulação do grafo e integração com a API.
-- `target/` — Build do backend gerado pelo Maven.
+```
+Busca-Dijkstra/
+│
+├── back/         # Backend Spring Boot (Java)
+│   └── src/main/java/com/example/main/...
+│   └── src/main/java/com/example/entrada/grafo.json
+│
+├── front/        # Frontend JavaScript (HTML, CSS, JS)
+│   └── public/index.html, styles.css, assets/
+│   └── src/api.js, dom.js, nodes.js, script.js, svg.js, assets/grafo.json
+│   └── Dockerfile
+│
+├── target/       # Build do backend (gerado pelo Maven)
+│
+├── pom.xml       # Configuração Maven do backend
+│
+└── README.md     # Este arquivo
+```
 
 ## ✨ Objetivo
 
-O projeto tem como objetivo didático demonstrar, de forma visual e interativa, como o algoritmo de Dijkstra encontra o menor caminho em um grafo, tornando o aprendizado mais acessível e intuitivo.
+O objetivo do projeto é demonstrar, de forma visual e interativa, como o algoritmo de Dijkstra encontra o menor caminho em um grafo, tornando o aprendizado mais acessível e intuitivo.
 
 ---
 
