@@ -1,9 +1,9 @@
-package com.example.busca.controller;
+package com.example.main.controller;
 
-import com.example.busca.model.Grafo;
-import com.example.busca.service.DijkstraService;
-import com.example.busca.util.Leitor;
-import com.example.busca.dto.Resposta;
+import com.example.main.model.Grafo;
+import com.example.main.service.DijkstraService;
+import com.example.main.util.Leitor;
+import com.example.main.dto.Resposta;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;

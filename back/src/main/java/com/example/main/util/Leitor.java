@@ -1,9 +1,9 @@
-package com.example.busca.util;
+package com.example.main.util;
 
 import java.io.InputStream;
 import java.util.Scanner;
 
-import com.example.busca.model.Grafo;
+import com.example.main.model.Grafo;
 
 public class Leitor {
 

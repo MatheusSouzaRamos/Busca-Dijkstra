@@ -1,4 +1,4 @@
-package com.example.busca.model;
+package com.example.main.model;
 
 import java.util.HashMap;
 import java.util.Map;

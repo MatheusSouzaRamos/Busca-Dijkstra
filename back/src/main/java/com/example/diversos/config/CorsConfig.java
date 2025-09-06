@@ -1,4 +1,4 @@
-package com.example.busca.config;
+package com.example.diversos.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
