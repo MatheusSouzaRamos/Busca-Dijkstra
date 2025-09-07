@@ -22,7 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-public class GrafoController {
+public class DijkstraController {
 
     @GetMapping
     public Resposta buscarCaminho(
