@@ -12,6 +12,7 @@ import {
   getNodesPositions,
   randomizePositions,
   highlightPath,
+  genHeuristics,
 } from "./nodes.js";
 import { populateSelectors, getMain } from "./dom.js";
 
@@ -59,6 +60,7 @@ const controller = () => {
   const main = getMain();
   let lineMap = new Map();
   let nodeDivs;
+  let nodePositions;
 
   components.downloadMap.addEventListener("click", () => {
     downloadDefaultMap(defaultMapPath);
@@ -96,17 +98,15 @@ const controller = () => {
     });
 
     const uniqueNodes = extractUniqueNodes(map);
-    const nodeMap = buildNodes(uniqueNodes);
-    nodeDivs = nodeMap;
-    appendNodesToMain(nodeMap, main);
+    nodeDivs = buildNodes(uniqueNodes);
+    appendNodesToMain(nodeDivs, main);
     populateSelectors(uniqueNodes, components.origin, components.destiny);
 
     requestAnimationFrame(() => {
-      randomizePositions(nodeMap, main);
+      randomizePositions(nodeDivs, main);
       const svg = createSvg();
       const mainRect = main.getBoundingClientRect();
-      const nodePositions = getNodesPositions(nodeMap);
-
+      nodePositions = getNodesPositions(nodeDivs);
       const paths = genPaths(map);
       paths.forEach((path, node) => {
         const mainNode = node;
@@ -129,6 +129,8 @@ const controller = () => {
     components.output.innerHTML = "";
     components.output.style.display = "none";
 
+    const sla = genHeuristics(nodePositions, components.destiny.value);
+    console.log(sla);
     const url =
       baseUrl +
       `?origem=${components.origin.value}&destino=${components.destiny.value}`;
@@ -136,7 +138,6 @@ const controller = () => {
 
     if (result) {
       components.output.style.display = "flex";
-      console.log();
       components.output.innerHTML = `${JSON.stringify(result, null, 2)}`;
     }
     if (result && result.caminho) {
