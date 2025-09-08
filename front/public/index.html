@@ -23,6 +23,24 @@
           <div>Destino:</div>
           <select required id="destiny"></select>
         </div>
+        <div class="from-to">
+          <div>Algoritmo de busca:</div>
+          <select required id="algorithm">
+            <option value="/dijkstra">Dijkstra</option>
+            <option value="/guloso">Busca Gulosa</option>
+            <option value="/aestrela">A*</option>
+            <option value="/aestrelaponderado">A* Ponderado</option>
+          </select>
+          <div id="pesoDiv" style="display: none">
+            <input
+              id="peso"
+              placeholder="Digite o peso"
+              type="number"
+              step="any"
+              min="0" />
+          </div>
+        </div>
+
         <div class="buttons">
           <button id="genBtn">Gerar mapa</button>
           <button id="pathBtn">Encontrar solução</button>

@@ -4,6 +4,7 @@ import {
   fetchPathFinder,
   fetchUserMap,
   fetchDefaultGrafoFile,
+  sendHeuristics,
 } from "./api.js";
 import {
   extractUniqueNodes,
@@ -51,54 +52,65 @@ const components = {
   origin: document.querySelector("#origin"),
   destiny: document.querySelector("#destiny"),
   output: document.querySelector("output"),
+  algorithm: document.querySelector("#algorithm"),
+  peso: document.querySelector("#pesoDiv"),
+  pesoInput: document.querySelector("#peso"),
 };
 
-const controller = () => {
-  const defaultMapPath = "../src/assets/grafo.json";
-  const baseUrl = "https://back-production-c034.up.railway.app/api";
-  //const baseUrl = "http://127.0.0.1:8081/api";
-  const main = getMain();
-  let lineMap = new Map();
-  let nodeDivs;
-  let nodePositions;
+const defaultMapPath = "../src/assets/grafo.json";
+//const baseUrl = "https://back-production-c034.up.railway.app/api";
+const baseUrl = "http://127.0.0.1:8082/api";
+const main = getMain();
+let lineMap = new Map();
+let nodeDivs;
+let nodePositions;
+let file;
 
+const controller = async () => {
   components.downloadMap.addEventListener("click", () => {
     downloadDefaultMap(defaultMapPath);
   });
+  components.algorithm.addEventListener("change", (e) => {
+    if (e.target.value == "/aestrelaponderado") {
+      components.peso.style.display = "block";
+    } else {
+      components.peso.style.display = "none";
+    }
+  });
 
-  components.genMap.addEventListener("click", async () => {
-    let file;
-    main.style.display = "flex";
-    main.innerHTML = "";
+  components.genMap.addEventListener("click", async (e) => {
+    e.preventDefault();
+    lineMap = new Map();
+    nodeDivs = null;
+    nodePositions = null;
+    file = null;
     components.origin.innerHTML = "";
     components.destiny.innerHTML = "";
     components.output.style.display = "none";
     let map;
+
     if (components.radioSim.checked) {
       map = await fetchDefaultMap(defaultMapPath);
-    } else if (components.radioNao.checked) {
-      map = await fetchUserMap(components.inputFile);
-    }
-    if (components.radioSim.checked) {
       file = await fetchDefaultGrafoFile();
-    } else if (components.radioNao.checked) {
+    }
+
+    if (components.radioNao.checked) {
+      map = await fetchUserMap(components.inputFile);
       file = components.inputFile.files[0];
-      if (!file) {
-        alert("Selecione um arquivo de grafo.json!");
-        return;
-      }
+    }
+
+    if (!file) {
+      alert("Selecione um arquivo de grafo.json!");
+      return;
     }
 
     const formData = new FormData();
     formData.append("file", file);
 
-    await fetch(baseUrl + "/upload-grafo", {
-      method: "POST",
-      body: formData,
-    });
-
     const uniqueNodes = extractUniqueNodes(map);
     nodeDivs = buildNodes(uniqueNodes);
+    main.style.display = "flex";
+    main.innerHTML = "";
     appendNodesToMain(nodeDivs, main);
     populateSelectors(uniqueNodes, components.origin, components.destiny);
 
@@ -128,14 +140,58 @@ const controller = () => {
 
     components.output.innerHTML = "";
     components.output.style.display = "none";
+    let url;
 
-    const sla = genHeuristics(nodePositions, components.destiny.value);
-    console.log(sla);
-    const url =
-      baseUrl +
-      `?origem=${components.origin.value}&destino=${components.destiny.value}`;
+    if (components.algorithm.value == "/dijkstra") {
+      url =
+        baseUrl +
+        components.algorithm.value +
+        `?origem=${components.origin.value}&destino=${components.destiny.value}`;
+    }
+
+    if (components.algorithm.value == "/guloso") {
+      url =
+        baseUrl +
+        components.algorithm.value +
+        `?origem=${components.origin.value}&destino=${components.destiny.value}`;
+    }
+    if (
+      components.algorithm.value == "/aestrelaponderado" ||
+      components.algorithm.value == "/aestrela"
+    ) {
+      const heuristics = genHeuristics(nodePositions, components.destiny.value);
+      const body = {
+        origem: components.origin.value,
+        destino: components.destiny.value,
+        peso:
+          components.algorithm.value == "/aestrelaponderado"
+            ? Number(components.pesoInput.value)
+            : 1.0,
+        heuristica: heuristics,
+      };
+
+      const response = await fetch(baseUrl + "/aestrela", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      const result = await response.json();
+
+      if (!result) throw new Error("Erro na requisição");
+      if (result) {
+        components.output.style.display = "flex";
+        components.output.innerHTML = `${JSON.stringify(result, null, 2)}`;
+      }
+      if (result && result.caminho) {
+        highlightPath(lineMap, result.caminho, nodeDivs);
+      }
+      return; 
+    }
+
     const result = await fetchPathFinder(url);
 
+    if (!result) throw new Error("Erro na requisição");
     if (result) {
       components.output.style.display = "flex";
       components.output.innerHTML = `${JSON.stringify(result, null, 2)}`;

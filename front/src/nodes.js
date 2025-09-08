@@ -165,7 +165,7 @@ export const highlightPath = async (lineMap, pathArray, divs, delay = 1500) => {
  * @param {Map<node, position>} nodePositions
  */
 export const genHeuristics = (nodePositions, finalNode) => {
-  const heuristics = new Map();
+  let heuristics = new Map();
   const finalPos = nodePositions.get(finalNode);
   nodePositions.forEach((pos, node) => {
     const x = pos.x;
@@ -175,5 +175,6 @@ export const genHeuristics = (nodePositions, finalNode) => {
     const distance = Math.sqrt(dx * dx + dy * dy);
     heuristics.set(node, distance);
   });
+  heuristics = Object.fromEntries(heuristics);
   return heuristics;
 };
