@@ -29,10 +29,24 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
 
 	<build>
+		<!-- Configura o Maven para reconhecer a pasta back -->
+		<sourceDirectory>back/src/main/java</sourceDirectory>
+		<testSourceDirectory>back/src/test/java</testSourceDirectory>
+
+		<resources>
+			<resource>
+				<directory>back/src/main/resources</directory>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<directory>back/src/test/resources</directory>
+			</testResource>
+		</testResources>
+
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
