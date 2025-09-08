@@ -1,13 +1,14 @@
-package com.example.busca.model;
+package com.example.main.model;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class Grafo {
+
     private Map<String, No> nos;
 
     public Grafo() {
-        nos = new HashMap<>();
+        this.nos = new HashMap<>();
     }
 
     public No getOuCriaNo(String nome) {
@@ -19,6 +20,18 @@ public class Grafo {
         No noOrigem = getOuCriaNo(origem);
         No noDestino = getOuCriaNo(destino);
         noOrigem.addVizinho(noDestino, peso);
+        noDestino.addVizinho(noOrigem, peso);
+    }
+
+
+    public Map<String, Integer> getArestas(String nome) {
+        No no = nos.get(nome);
+        if (no == null) return new HashMap<>();
+        Map<String, Integer> vizinhos = new HashMap<>();
+        for (Map.Entry<No, Integer> entry : no.getVizinhos().entrySet()) {
+            vizinhos.put(entry.getKey().getNome(), entry.getValue());
+        }
+        return vizinhos;
     }
 
     public Map<String, No> getNos() {

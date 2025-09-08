@@ -1,9 +1,9 @@
-package com.example.busca.service;
+package com.example.main.service;
 
 import java.util.*;
 
-import com.example.busca.model.Grafo;
-import com.example.busca.model.No;
+import com.example.main.model.Grafo;
+import com.example.main.model.No;
 
 public class DijkstraService {
 

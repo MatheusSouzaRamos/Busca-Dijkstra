@@ -1,4 +1,4 @@
-package com.example.busca.dto;
+package com.example.main.dto;
 
 import java.util.List;
 
