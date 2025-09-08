@@ -22,6 +22,7 @@ export const extractUniqueNodes = (map) => {
  * @param {Set<node>} nodeList Set with all unique nodes
  * @returns {Map<node, div>} returns a map with each node's div
  */
+
 export const buildNodes = (nodeList) => {
   if (!nodeList instanceof Set)
     throw new Error("Param not an set of unique nodes, at " + buildNodes.name);
@@ -67,11 +68,11 @@ export const getNodesPositions = (nodeMap) => {
 
 /**
  *
- * @param {*} x
- * @param {*} y
- * @param {*} positions
- * @param {*} nodeSize
- * @param {*} minMargin
+ * @param {Number} x
+ * @param {Number} y
+ * @param {Number[]} positions
+ * @param {Number} nodeSize
+ * @param {Number} minMargin
  * @returns
  */
 const isOverlapping = (x, y, positions, nodeSize, minMargin) => {
@@ -158,4 +159,22 @@ export const highlightPath = async (lineMap, pathArray, divs, delay = 1500) => {
   if (divs.has(pathArray[pathArray.length - 1])) {
     divs.get(pathArray[pathArray.length - 1]).classList.add("highlight-final");
   }
+};
+/**
+ *
+ * @param {Map<node, position>} nodePositions
+ */
+export const genHeuristics = (nodePositions, finalNode) => {
+  let heuristics = new Map();
+  const finalPos = nodePositions.get(finalNode);
+  nodePositions.forEach((pos, node) => {
+    const x = pos.x;
+    const y = pos.y;
+    const dx = pos.x - finalPos.x;
+    const dy = pos.y - finalPos.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    heuristics.set(node, distance);
+  });
+  heuristics = Object.fromEntries(heuristics);
+  return heuristics;
 };

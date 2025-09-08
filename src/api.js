@@ -59,25 +59,13 @@ export const fetchUserMap = (inputFile) => {
  * @returns {Promise<Object>} Returns the path found as json
  */
 
-export const fetchPathFinder = async (path, tries = 5, delay = 1000) => {
-  for (let attempt = 1; attempt <= tries; attempt++) {
-    try {
-      if (typeof path !== "string")
-        throw new Error("Not string in" + fetchPathFinder.name);
-      const result = await fetch(path);
-      if (!result.ok) throw new Error("Resposta não OK");
-      return await result.json();
-    } catch (error) {
-      if (attempt === tries) {
-        if (error.message == "Failed to fetch")
-          alert(
-            "Erro: não foi possível se conectar ao servidor. Verifique se o servidor está ligado"
-          );
-        else alert("Erro de conexão após várias tentativas.");
-        return null;
-      }
-      await new Promise((res) => setTimeout(res, delay));
-    }
+export const fetchPathFinder = async (path) => {
+  try {
+    const result = await fetch(path, { method: "GET" });
+    if (!result.ok) return null;
+    return await result.json();
+  } catch (e) {
+    return null;
   }
 };
 
@@ -85,4 +73,15 @@ export const fetchDefaultGrafoFile = async () => {
   const response = await fetch("../src/assets/grafo.json");
   const blob = await response.blob();
   return new File([blob], "grafo.json", { type: "application/json" });
+};
+
+export const sendHeuristics = async (path, heuristics) => {
+  try {
+    const result = await fetch(path, {
+      method: "POST",
+      body: JSON.stringify(heuristics),
+    });
+  } catch (e) {
+    return null;
+  }
 };
