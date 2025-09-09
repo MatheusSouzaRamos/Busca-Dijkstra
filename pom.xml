@@ -27,12 +27,11 @@
 	</dependencies>
 
 	<build>
-		<!-- Configura o Maven para reconhecer a pasta back -->
-		<sourceDirectory>back/src/main/java</sourceDirectory>
+		<sourceDirectory>src/main/java</sourceDirectory>
 
 		<resources>
 			<resource>
-				<directory>back/src/main/resources</directory>
+				<directory>src/main/resources</directory>
 			</resource>
 		</resources>
 		
